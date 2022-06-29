@@ -1,0 +1,196 @@
+{% include 'template.html' %}
+{% block head %}
+    <style>
+    </style>
+{% endblock %}
+{% block body %}
+    <nav class="navbar navbar-expand-lg bg-secondary bg-gradient">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-6 py-2 text-light ps-2" href="/">DAILY BLOG</a>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row" >
+            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 bg-secondary bg-gradient m-auto mt-4 p-4 text-center animate__animated" id="main1">
+                <form id="login">
+                    <div class="form-floating mb-4">
+                        <input name="email" type="email" class="form-control" id="email-login" placeholder="name@example.com">
+                        <label for="email-login">Email</label>
+                    </div>
+                    <div class="form-floating position-relative">
+                        <input name="password" type="password" class="form-control" id="password-login" placeholder="Password">
+                        <label for="password-login">Password</label>
+                        <button type="button" class="btn position-absolute top-0 end-0 h-100 border-0" onclick="show_password()" id="eye-btn"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <div id="status"></div>
+                    <button type="button" id="submit-login" onclick="login()" class="btn btn-outline-light fw-bold mt-4 rounded-4">Login</button>
+                </form>
+                <hr class="text-light">
+                <div class=" pt-1 fw-bold fs-6 text-light">
+                    <div>New to Daily Blog </div>
+                    <button class="btn btn-outline-light fw-bold mt-3 rounded-4" onclick="show_signup()">Sign up</button>
+                </div>
+            </div>
+            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 bg-secondary bg-gradient m-auto mt-4 p-4 text-center animate__animated d-none" id="main2">
+                <form id="signup">
+                    <div class="form-floating mb-4">
+                        <input name="name" type="text" class="form-control" id="name-signup" placeholder="Username">
+                        <label for="name-signup">Username</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input name="email" type="email" class="form-control" id="email-signup" placeholder="name@example.com">
+                        <label for="email-signup">Email</label>
+                    </div>
+                    <div class="form-floating position-relative  mb-4">
+                        <input name="password" type="password" class="form-control" id="password-signup" placeholder="Password">
+                        <label for="password-signup">Password</label>
+                    </div>
+                    <div class="form-floating position-relative">
+                        <input type="password" class="form-control" id="confirm-password-signup" placeholder="Password">
+                        <label for="confirm-password-signup">Confirm Password</label>
+                    </div>
+                    <div id="status1"></div>
+                    <button type="button" id="submit-signup" onclick="signup()" class="btn btn-outline-light fw-bold mt-4 rounded-4">Sign up</button>
+                </form>
+                <hr class="text-light">
+                <div class=" pt-1 fw-bold fs-6 text-light">
+                    <div>Already in Daily Blog </div>
+                    <button class="btn btn-outline-light fw-bold mt-3 rounded-4" onclick="show_login()">Log in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+{% block tail %}
+    <script>
+        var main = document.getElementById("main1");
+        var main1 = document.getElementById("main2");
+        var email_login = document.getElementById("email-login");
+        var password_login = document.getElementById("password-login");
+        var submit_login = document.getElementById("submit-login");
+        var eye_btn = document.getElementById("eye-btn");
+        var valid = /\S+@\S+\.\S+/;
+        var name_signup = document.getElementById("name-signup");
+        var email_signup = document.getElementById("email-signup");
+        var password_signup = document.getElementById("password-signup");
+        var confirm_password_signup = document.getElementById("confirm-password-signup");
+        var submit_signup = document.getElementById("submit-signup");
+        function login(){
+            if (email_login.value == "" || !(valid.test(email_login.value))){
+                document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid email </div>`;
+                return 0
+            }
+            if (password_login.value == ""){
+                document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid password </div>`;
+                return 0
+            }
+            document.getElementById('status').innerHTML = '';
+            email_login.setAttribute('readonly','true');
+            password_login.setAttribute('readonly','true');
+            submit_login.setAttribute('disabled','true'); 
+            console.log(email_login.value);
+            var fd = new FormData(document.getElementById("login"));
+            for (const value of fd.values()) {
+                console.log(value);
+            }
+            superduper("POST","/api/login",fd,"login_resp",null);
+        }
+
+        function login_resp(resp){
+            var resp = JSON.parse(resp);
+            console.log(resp);
+            document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">${resp["Description"]}</div>`;
+            if (resp.result){
+                window.location.replace("/");
+            }
+            else{
+                email_login.removeAttribute('readonly','true');
+                password_login.removeAttribute('readonly','true');
+                submit_login.removeAttribute('disabled','true'); 
+            }
+        }
+
+        function signup(){
+            if (name_signup.value == ""){
+                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid Username </div>`;
+                return 0
+            }
+            if (email_signup.value == "" || !(valid.test(email_signup.value))){
+                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid email </div>`;
+                return 0
+            }
+            if (password_signup.value == ""){
+                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid password </div>`;
+                return 0
+            }
+            if (password_signup.value != confirm_password_signup.value){
+                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Password doesn't match </div>`;
+                return 0
+            }
+            document.getElementById('status1').innerHTML = '';
+            name_signup.setAttribute('readonly','true');
+            email_signup.setAttribute('readonly','true');
+            password_signup.setAttribute('readonly','true');
+            confirm_password_signup.setAttribute('readonly','true');
+            submit_signup.setAttribute('disabled','true');
+            var fd = new FormData(document.getElementById("signup"));
+            superduper("POST","/api/signup",fd,"signup_resp",null);
+        }
+
+        function signup_resp(resp){
+            var resp = JSON.parse(resp);
+            document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">${resp.Description}</div>`;
+            if (resp.result){
+                window.location.replace("/");
+            }
+            else{
+                name_signup.removeAttribute('readonly','true');
+                email_signup.removeAttribute('readonly','true');
+                password_signup.removeAttribute('readonly','true');
+                confirm_password_signup.removeAttribute('readonly','true');
+                submit_signup.removeAttribute('disabled','true');
+            }
+            
+        }
+
+        function show_password(){
+            if (password_login.type == 'password'){
+                password_login.type = 'text';
+                eye_btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            }
+            else{
+                password_login.type = 'password';
+                eye_btn.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        }
+
+        function show_signup(){
+            email_login.value = "";
+            password_login.value = "";
+            document.getElementById('status1').innerHTML = '';
+            main.classList.add("animate__backOutDown");
+            setTimeout(()=>{
+                main1.classList.add("animate__backInDown");
+                main1.classList.remove("d-none");
+                main.classList.add("d-none");
+                main.classList.remove("animate__backOutDown");
+            }, 600);
+        }
+
+        function show_login(){
+            name_signup.value = "";
+            email_signup.value = "";
+            password_signup.value = "";
+            confirm_password_signup.value = "";
+            document.getElementById('status').innerHTML = '';
+            main1.classList.add("animate__backOutDown");
+            setTimeout(()=>{
+                main.classList.add("animate__backInDown");
+                main.classList.remove("d-none");
+                main1.classList.add("d-none");
+                main1.classList.remove("animate__backOutDown");
+            }, 600);
+        }
+    </script>
+{% endblock %}
