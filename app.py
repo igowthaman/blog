@@ -8,7 +8,7 @@ from model import User,Post, db
 load_dotenv('.env')
 
 
-app = Flask("Daily Blog", template_folder='../templates')
+app = Flask("Daily Blog", template_folder='views')
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
