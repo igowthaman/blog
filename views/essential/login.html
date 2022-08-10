@@ -1,61 +1,56 @@
-{% include 'template.html' %}
+{% include 'logtemplate.html' %}
 {% block head %}
     <style>
     </style>
 {% endblock %}
-{% block body %}
-    <nav class="navbar navbar-expand-lg bg-secondary bg-gradient">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold fs-6 py-2 text-light ps-2" href="/">DAILY BLOG</a>
-        </div>
-    </nav>
-    <div class="container-fluid">
+{% block mainbody %}
+    <div class="container-fluid pt-5">
         <div class="row" >
-            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 bg-secondary bg-gradient m-auto mt-4 p-4 text-center animate__animated" id="main1">
+            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 border border-2 border-dark  m-auto mt-4 p-4 text-center animate__animated" id="main1">
                 <form id="login">
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 text-start">
                         <input name="email" type="email" class="form-control" id="email-login" placeholder="name@example.com">
                         <label for="email-login">Email</label>
                     </div>
-                    <div class="form-floating position-relative">
+                    <div class="form-floating position-relative text-start">
                         <input name="password" type="password" class="form-control" id="password-login" placeholder="Password">
                         <label for="password-login">Password</label>
                         <button type="button" class="btn position-absolute top-0 end-0 h-100 border-0" onclick="show_password()" id="eye-btn"><i class="bi bi-eye"></i></button>
                     </div>
                     <div id="status"></div>
-                    <button type="button" id="submit-login" onclick="login()" class="btn btn-outline-light fw-bold mt-4 rounded-4">Login</button>
+                    <button type="button" id="submit-login" onclick="login()" class="btn btn-dark fw-bold mt-4 rounded-3">Login</button>
                 </form>
-                <hr class="text-light">
-                <div class=" pt-1 fw-bold fs-6 text-light">
+                <hr class="text-dark">
+                <div class=" pt-1 fw-bold fs-6 text-dark">
                     <div>New to Daily Blog </div>
-                    <button class="btn btn-outline-light fw-bold mt-3 rounded-4" onclick="show_signup()">Sign up</button>
+                    <button class="btn btn-outline-dark fw-bold mt-3 rounded-3" onclick="show_signup()">Sign up</button>
                 </div>
             </div>
-            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 bg-secondary bg-gradient m-auto mt-4 p-4 text-center animate__animated d-none" id="main2">
+            <div class="col-10 col-md-8 col-xl-6 col-xxl-4 rounded-4 border border-2 border-dark m-auto mt-4 p-4 text-center animate__animated d-none" id="main2">
                 <form id="signup">
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 text-start">
                         <input name="name" type="text" class="form-control" id="name-signup" placeholder="Username">
-                        <label for="name-signup">Username</label>
+                        <label for="name-signup">Name</label>
                     </div>
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 text-start">
                         <input name="email" type="email" class="form-control" id="email-signup" placeholder="name@example.com">
                         <label for="email-signup">Email</label>
                     </div>
-                    <div class="form-floating position-relative  mb-4">
+                    <div class="form-floating position-relative  mb-4 text-start">
                         <input name="password" type="password" class="form-control" id="password-signup" placeholder="Password">
                         <label for="password-signup">Password</label>
                     </div>
-                    <div class="form-floating position-relative">
+                    <div class="form-floating position-relative text-start">
                         <input type="password" class="form-control" id="confirm-password-signup" placeholder="Password">
                         <label for="confirm-password-signup">Confirm Password</label>
                     </div>
                     <div id="status1"></div>
-                    <button type="button" id="submit-signup" onclick="signup()" class="btn btn-outline-light fw-bold mt-4 rounded-4">Sign up</button>
+                    <button type="button" id="submit-signup" onclick="signup()" class="btn btn-dark fw-bold mt-4 rounded-3">Sign up</button>
                 </form>
-                <hr class="text-light">
-                <div class=" pt-1 fw-bold fs-6 text-light">
+                <hr class="text-dark">
+                <div class=" pt-1 fw-bold fs-6">
                     <div>Already in Daily Blog </div>
-                    <button class="btn btn-outline-light fw-bold mt-3 rounded-4" onclick="show_login()">Log in</button>
+                    <button class="btn btn-outline-dark fw-bold mt-3 rounded-3" onclick="show_login()">Log in</button>
                 </div>
             </div>
         </div>
@@ -76,14 +71,17 @@
         var password_signup = document.getElementById("password-signup");
         var confirm_password_signup = document.getElementById("confirm-password-signup");
         var submit_signup = document.getElementById("submit-signup");
+
         function login(){
             if (email_login.value == "" || !(valid.test(email_login.value))){
-                document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid email </div>`;
-                return 0
+                
+                console.log(10);    
+                console.log(document.getElementById('status'));
+                document.getElementById('status').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid email </div>`;
             }
             if (password_login.value == ""){
-                document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid password </div>`;
-                return 0
+                document.getElementById('status').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid password </div>`;
+                return 0;
             }
             document.getElementById('status').innerHTML = '';
             email_login.setAttribute('readonly','true');
@@ -98,9 +96,9 @@
         }
 
         function login_resp(resp){
+            create_alert(resp);
             var resp = JSON.parse(resp);
             console.log(resp);
-            document.getElementById('status').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">${resp["Description"]}</div>`;
             if (resp.result){
                 window.location.replace("/");
             }
@@ -113,19 +111,19 @@
 
         function signup(){
             if (name_signup.value == ""){
-                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid Username </div>`;
+                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid Name </div>`;
                 return 0
             }
             if (email_signup.value == "" || !(valid.test(email_signup.value))){
-                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid email </div>`;
+                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid email </div>`;
                 return 0
             }
             if (password_signup.value == ""){
-                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Enter valid password </div>`;
+                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid password </div>`;
                 return 0
             }
             if (password_signup.value != confirm_password_signup.value){
-                document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">Password doesn't match </div>`;
+                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Password doesn't match </div>`;
                 return 0
             }
             document.getElementById('status1').innerHTML = '';
@@ -139,8 +137,8 @@
         }
 
         function signup_resp(resp){
+            create_alert(resp);
             var resp = JSON.parse(resp);
-            document.getElementById('status1').innerHTML = `<div class="text-light w-100 text-center pt-2 fs-4">${resp.Description}</div>`;
             if (resp.result){
                 window.location.replace("/");
             }

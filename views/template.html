@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title if title else 'Daily Blog'}}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     {% block head %}
     {% endblock %}
 </head>
+
 <body>
     {% block body %}
     {% endblock %}
     {% block tail %}
     {% endblock %}
+    
+    <div class="toast-container position-fixed bottom-0 end-0 p-0 mx-3 my-5">
+        <div id="livestatus" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body p-0" id="resp-status">
+            </div>
+        </div>
+    </div>
     <script>
-        
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
         function superduper(method, endpoint, data, response_func, use_data) {
             var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
+            xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var respVal = this.responseText;
                     window[response_func](String(respVal), use_data);
@@ -39,6 +52,22 @@
             xhttp.open(method, endpoint, true);
             xhttp.send(data);
         }
+        
+        function create_alert(resp){
+            resp = JSON.parse(resp);
+            const toastLiveExample = document.getElementById('livestatus')
+                
+            const toast = new bootstrap.Toast(toastLiveExample)
+            toast.show()
+            
+            document.getElementById("resp-status").innerHTML = `
+                <div class="alert alert-${resp["category"]} d-flex m-0">
+                    <div class="fs-5 ">${resp["description"]}</div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>`;
+            return 0;
+        }
     </script>
 </body>
+
 </html>

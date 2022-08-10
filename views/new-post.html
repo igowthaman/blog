@@ -1,0 +1,103 @@
+{% include 'template.html' %}
+{% block head %}
+    <style>
+        .input-title{
+            border: 0px;
+            outline: 0px;
+        }
+
+        .content-start:empty:not(:focus):before{
+            content:attr(data-text)
+        }
+
+        .content-start:empty:focus:before{
+            content:attr(data-text)
+        }
+        
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container-fluid mt-5">
+        <div class="row shadow fixed-top bg-light">
+            <div class="col-12 col-md-8 m-auto ">
+                <nav class="navbar navbar-expand-lg bg-gradient d-flex justify-content-between">
+                    <a class="navbar-brand fw-bold fs-4 text-dark ps-2" href="/">DAILY BLOG</a>
+                    <div class="d-flex pe-2">
+                        <a class="btn fw-bold mx-2 border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="Home" data-bs-placement="bottom" href="/">
+                            <i class="bi bi-house"></i>
+                        </a>
+                        <button type="button" onclick="post()" id="post-btn" class="btn border-0 fs-4 fw-bold">
+                            <i class="bi bi-journal-check"></i>
+                        </button>
+                        <a class="btn fw-bold border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="Profile" data-bs-placement="bottom" href="/@{{user.id}}">
+                            <i class="bi bi-person-fill"></i>
+                        </a>
+                        <a class="btn fw-bold border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="logout" data-bs-placement="bottom" href="/">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col-12 col-md-8 col-xl-6 m-auto mt-md-4">
+                <div class="mb-3">
+                    <input type="text" class="input-title w-100 p-2 fs-3" id="title" placeholder="Title" autofocus>
+                </div>
+                <div class="mb-3">
+                    <div contenteditable=true class="input-title w-100 content content-start p-2" id="content" data-text="Tell your idea...."></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block tail %}
+    <script>
+        var post_btn = document.getElementById("post-btn");
+        var title = document.getElementById("title");
+        var content = document.getElementById("content");
+        function post(){
+            if (title.value == ""){
+                const toastLiveExample = document.getElementById('livestatus')
+                
+                const toast = new bootstrap.Toast(toastLiveExample)
+                toast.show()
+                
+                document.getElementById("resp-status").innerHTML = `
+                    <div class="alert alert-danger d-flex m-0">
+                        <div class="fs-5 ">Title is required</div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>`;
+                return 0;
+            }
+            if (content.value == ""){
+                document.getElementById("status").innerHTML = '<div class="text-secondary w-100 text-center py-3 fs-5">Content is required</div>';
+                return 0;
+            }
+            document.getElementById("status").innerHTML = "";
+            var data = {
+                title : title.value,
+                content : content.value,
+                user : "{{user.id}}"
+            };
+            post_btn.setAttribute("disabled","true");
+            title.setAttribute("readonly","true");
+            content.setAttribute("readonly","true");
+            superduper("POST","/api/post",JSON.stringify(data),"post_resp",null);
+        
+        }
+
+        function post_resp(resp){
+            resp = JSON.parse(resp);
+            if(resp.result){
+                window.location.replace("/{{user.id}}");
+            }
+            else{
+                post_btn.removeAttribute("disabled","true");
+                title.removeAttribute("readonly","true");
+                content.removeAttribute("readonly","true");
+            }
+
+        }
+    </script>
+{% endblock %}

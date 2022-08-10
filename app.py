@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from api import api
 from os import environ
 from dotenv import load_dotenv
+from essential import essential
+from post import post
 from model import User,Post, db
 load_dotenv('.env')
 
@@ -24,10 +26,13 @@ def load_user(user_id):
 
 @app.route("/")
 def main():
-    post = Post.query.order_by(Post.id.desc()).all()
+    post = db.session.query(Post, User).with_entities(
+        Post.id, Post.content, Post.title, Post.user_id, User.name, Post.created_at 
+    ).filter(
+        User.id == Post.id
+    ).order_by(Post.id.desc()).all()
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
-        print(user.password)
         return render_template('index.html',user=user, post=post)
     else:
         return render_template('index.html',post=post)
@@ -45,7 +50,7 @@ def profile(id):
 
 
 @app.route("/new-post")
-def post():
+def post1():
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
         return render_template('post.html',user=user)
@@ -53,23 +58,19 @@ def post():
         return render_template('home.html')
 
 
-
-@app.route("/login")
-def login():
+@app.route("/post/new")
+def new_post():
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
-        return render_template('index.html',user=user)
+        return render_template('new-post.html',user=user)
     else:
-        return render_template('login.html')
-
-@app.route("/logout")
-def logout():
-    if current_user.is_authenticated:
-        logout_user()
-    return redirect("/")
+        return render_template('home.html')
 
 
 app.register_blueprint(api)
+app.register_blueprint(essential)
+app.register_blueprint(post)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

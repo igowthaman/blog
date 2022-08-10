@@ -4,3 +4,4 @@ lib
 *.pyc
 *.db
 .env
+secret
