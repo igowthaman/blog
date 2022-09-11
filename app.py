@@ -28,8 +28,6 @@ def load_user(user_id):
 def main():
     post = db.session.query(Post, User).with_entities(
         Post.id, Post.content, Post.title, Post.user_id, User.name, Post.created_at 
-    ).filter(
-        User.id == Post.id
     ).order_by(Post.id.desc()).all()
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
@@ -46,25 +44,7 @@ def profile(id):
         print(len(post))
         return render_template('profile.html',user=user, post = post)
     else:
-        return render_template('home.html')
-
-
-@app.route("/new-post")
-def post1():
-    if current_user.is_authenticated:
-        user = User.query.filter_by(id = current_user.id).first()
-        return render_template('post.html',user=user)
-    else:
-        return render_template('home.html')
-
-
-@app.route("/post/new")
-def new_post():
-    if current_user.is_authenticated:
-        user = User.query.filter_by(id = current_user.id).first()
-        return render_template('new-post.html',user=user)
-    else:
-        return render_template('home.html')
+        return render_template('index.html')
 
 
 app.register_blueprint(api)

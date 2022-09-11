@@ -13,6 +13,23 @@
         .content-start:empty:focus:before{
             content:attr(data-text)
         }
+
+        .context-menu {
+            position: absolute;
+            text-align: center;
+            background: white;
+            border: 2px solid black;
+        }
+  
+        .context-menu ul {
+            padding: 0px;
+            margin: 0px;
+            min-width: 150px;
+            list-style: none;
+        }
+        .context-menu ul li button{
+            border: 0;
+        }
         
     </style>
 {% endblock %}
@@ -23,32 +40,38 @@
                 <nav class="navbar navbar-expand-lg bg-gradient d-flex justify-content-between">
                     <a class="navbar-brand fw-bold fs-4 text-dark ps-2" href="/">DAILY BLOG</a>
                     <div class="d-flex pe-2">
-                        <a class="btn fw-bold mx-2 border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="Home" data-bs-placement="bottom" href="/">
-                            <i class="bi bi-house"></i>
-                        </a>
                         <button type="button" onclick="post()" id="post-btn" class="btn border-0 fs-4 fw-bold">
                             <i class="bi bi-journal-check"></i>
                         </button>
                         <a class="btn fw-bold border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="Profile" data-bs-placement="bottom" href="/@{{user.id}}">
                             <i class="bi bi-person-fill"></i>
                         </a>
-                        <a class="btn fw-bold border border-0 fs-4" data-bs-toggle="tooltip" data-bs-title="logout" data-bs-placement="bottom" href="/">
-                            <i class="bi bi-box-arrow-right"></i>
-                        </a>
                     </div>
                 </nav>
             </div>
         </div>
-        <div class="row py-3">
+        <div class="row py-3" id="newpost">
             <div class="col-12 col-md-8 col-xl-6 m-auto mt-md-4">
-                <div class="mb-3">
-                    <input type="text" class="input-title w-100 p-2 fs-3" id="title" placeholder="Title" autofocus>
+                <div class="mb-3 post">
+                    <input type="text" class="input-title w-100 p-2 fs-3 " id="title" placeholder="Title" autofocus>
                 </div>
-                <div class="mb-3">
-                    <div contenteditable=true class="input-title w-100 content content-start p-2" id="content" data-text="Tell your idea...."></div>
+                <div class="mb-3 post" id="content">
+                    <div contenteditable=true class="input-title w-100 content content-start p-2 " data-text="Tell your idea...."></div>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="contextMenu" class="context-menu rounded-3" 
+        style="display:none">
+        <ul class="d-flex">
+            <li><button class="btn btn-outline-dark rounded-3 "><i class="bi bi-type-bold"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-type-italic"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-type-underline"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-text-center"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-text-right"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-text-left"></i></button></li>
+            <li><button class="btn btn-outline-dark rounded-3"><i class="bi bi-justify"></i></button></li>
+        </ul>
     </div>
 {% endblock %}
 {% block tail %}
@@ -98,6 +121,31 @@
                 content.removeAttribute("readonly","true");
             }
 
+        }
+
+        document.getElementById("newpost").onclick = hideMenu;
+        document.getElementById("newpost").oncontextmenu = rightClick;
+  
+        function hideMenu() {
+            document.getElementById(
+                "contextMenu").style.display = "none"
+        }
+  
+        function rightClick(e) {
+            console.log(window.getSelection());
+            e.preventDefault();
+  
+            if (document.getElementById(
+                "contextMenu").style.display == "block")
+                hideMenu();
+            else {
+                var menu = document
+                    .getElementById("contextMenu")
+                      
+                menu.style.display = 'block';
+                menu.style.left = e.pageX + "px";
+                menu.style.top = e.pageY + "px";
+            }
         }
     </script>
 {% endblock %}
