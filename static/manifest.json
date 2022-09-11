@@ -1,0 +1,27 @@
+{
+    "short_name": "Daily Blog",
+    "name": "Daily Blog",
+    "icons": [
+        {
+            "src": "/static/img/logo.png",
+            "type": "image/png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "/static/img/logo.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        },
+        {
+            "src": "/static/img/logo.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/",
+    "background_color": "#f8f9fa",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#ffc107",
+    "orientation": "portrait-primary"
+}
