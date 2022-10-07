@@ -18,7 +18,7 @@
                     </div>
                     <div class="d-none d-md-block col-md-6 col-lg-8">
                         <p class="fw-bold fs-6 my-3 text-secondary"> Total Stories <span class="text-dark ps-4">{{post|length}}</span></p>
-                        <p class="fw-bold fs-6 my-3 text-secondary">Joined at <span class="text-dark ps-5">{{user.created_at.strftime('%d/%m/%y')}}</span></p>
+                        <p class="fw-bold fs-6 my-3 text-secondary">Joined at <span class="text-dark ps-5">{{user.created_at.strftime('%d-%m-%Y %H:%M')}}</span></p>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                         </div>
                         <hr class="my-1">
                         <p class="fs-2 pt-1 fw-bold text-capitalize mb-2">{{i.title}}</p>
-                        <p class="fs-4 text-secondary">{{i.content}}</p>
+                        <p class="fs-5 text-secondary">{{i.content}}</p>
                     </div>
                 {% endfor %}
             </div>  

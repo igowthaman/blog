@@ -9,12 +9,12 @@
                     <div class="col-11 col-md-7 m-auto my-3 rounded-4 shadow bg-light bg-gradient m-auto text-dark py-2 px-4">
                         <div class="d-flex">
                             <p class="fs-4 m-0 "><i class="bi bi-person-fill"></i></p>
-                            <p class="fs-6 m-0 my-auto text-capitalize ms-2"><a href="/{{i.id}}" class="text-decoration-none text-dark " style="font-size:1.2em;">{{i.name}}</a></p>
+                            <p class="fs-6 m-0 my-auto text-capitalize ms-2"><a href="/{{i.user_id}}" class="text-decoration-none text-dark " style="font-size:1.2em;">{{i.name}}</a></p>
                             <p class="fs-6 m-0 mt-2 mx-2 text-secondary" style="font-size:0.8em;">{{i.created_at.strftime('%d %b, %y')}}</p>
                         </div>
                         <hr class="my-1">
-                        <p class="fs-2 pt-1 fw-bold text-capitalize mb-2">{{i.title}}</p>
-                        <p class="fs-4 text-secondary">{{i.content}}</p>
+                        <p class="fs-2 pt-1 fw-bold text-capitalize mb-2"><a href="/post/{{i.id}}" class="text-decoration-none text-dark">{{i.title}}</a></p>
+                        <p class="fs-5 text-secondary">{{i.content}}</p>
                     </div>
                 {% endfor %}
             {% else %}
