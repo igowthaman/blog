@@ -42,7 +42,7 @@ def main():
 def profile(id):
     if current_user.is_authenticated:
         user = User.query.filter_by(id = id).first()
-        post = Post.query.order_by(Post.id.desc()).filter_by(user_id = id).all()
+        post = Post.query.order_by(Post.id.desc()).filter_by(user_id = id, is_active=True).all()
         print(len(post))
         return render_template('profile.html',user=user, post = post)
     else:

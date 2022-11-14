@@ -31,12 +31,13 @@ def delete():
             "Description" : "Post deletion failed"
         }
     
-    post = Post.query.filter_by(id = data[id]).first()
+    post = Post.query.filter_by(id = data["id"]).first()
     post.is_active  = False
     db.session.flush()
     db.session.commit()
     return {
         "result" : True,
         "category" : "success",
-        "Description" : "Post deleted successfully!!"
+        "description" : "Post deleted successfully!!",
+        "id" : data["id"]
     }

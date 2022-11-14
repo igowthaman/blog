@@ -18,7 +18,7 @@ def post1():
 def post(post_id):
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
-        dpost = Post.query.filter_by(id = post_id).first()
+        dpost = Post.query.filter_by(id = post_id, is_active=True).first()
         return render_template('post.html',user=user, post=dpost)
     else:
         return render_template('home.html')
@@ -27,7 +27,7 @@ def post(post_id):
 @post_route.route("/post/new")
 def new_post():
     if current_user.is_authenticated:
-        user = User.query.filter_by(id = current_user.id).first()
+        user = User.query.filter_by(id = current_user.id, is_active=True).first()
         return render_template('new-post.html',user=user)
     else:
         return render_template('home.html')

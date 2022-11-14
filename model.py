@@ -23,3 +23,10 @@ class Post(db.Model, UserMixin):
     content = db.Column(db.String(2550))
     is_active = db.Column(db.Boolean, default=True, server_default=literal(True))
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+class Saved(db.Model, UserMixin):
+    __tablename__ = "saved"
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer(), db.ForeignKey('post.id'), nullable=False)
+    is_active = db.Column(db.Boolean, default=True, server_default=literal(True))
