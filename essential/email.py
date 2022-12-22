@@ -6,12 +6,6 @@ from email.mime.multipart import MIMEMultipart
 import smtplib
 from os import environ
 
-smtp = smtplib.SMTP('smtp.gmail.com', 587)
-smtp.ehlo()
-smtp.starttls()
-
-smtp.login(environ.get("EMAIL"),environ.get("EMAIL_PASSWORD"))
-
 def message(subject,text):
 	msg = MIMEMultipart()
 	msg['Subject'] = subject
@@ -20,9 +14,16 @@ def message(subject,text):
 
 def send_email(email,subject,text):
     try:
+        smtp = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp.ehlo()
+        smtp.starttls()
+
+        smtp.login(environ.get("EMAIL"),environ.get("EMAIL_PASSWORD"))
+
         msg = message(subject, text)
         smtp.sendmail(from_addr=environ.get("EMAIL"),
             to_addrs=email, msg=msg.as_string())
+        smtp.quit()
         return True
     except Exception as e:
         print(e)
