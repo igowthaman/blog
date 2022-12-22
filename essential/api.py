@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import current_user, logout_user, login_user
+import random
+
 from model import *
+from .email import send_email
 
 essential_api = Blueprint("essential_api",__name__,url_prefix="/api")
 
@@ -53,4 +56,40 @@ def signup():
         "result" : True,
         "category" : "success",
         "description" : "Account created successfully!!"
+    })
+
+@essential_api.route("/sent-otp", methods=["POST"])
+def send_otp():
+
+    name = request.form.get("name").capitalize()
+    email = request.form.get("email")
+    otp = str(random.randint(10000, 99999))
+    session["otp"] = otp
+    mail = send_email(email,"Daily Blog - OTP",render_template("templates/otpemail.html", otp = otp, name = name))
+    if mail:
+        return jsonify({
+            "result" : True,
+            "category" : "success",
+            "description" : "OTP sent successfully!!"
+        })
+    return jsonify({
+        "result" : False,
+        "category" : "danger",
+        "description" : "Please try again after sometime!!"
+    })
+
+
+@essential_api.route("/verify-otp", methods=["POST"])
+def verify_otp():
+    otp = request.form.get("otp-signup")
+    if otp == session["otp"]:
+        return jsonify({
+            "result" : True,
+            "category" : "success",
+            "description" : "OTP verified successfully!!"
+        })
+    return jsonify({
+        "result" : False,
+        "category" : "danger",
+        "description" : "Invalid OTP"
     })

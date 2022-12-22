@@ -36,16 +36,28 @@
                         <input name="email" type="email" class="form-control" id="email-signup" placeholder="name@example.com">
                         <label for="email-signup">Email</label>
                     </div>
-                    <div class="form-floating position-relative  mb-4 text-start">
-                        <input name="password" type="password" class="form-control" id="password-signup" placeholder="Password">
-                        <label for="password-signup">Password</label>
+                    <div id="status2"></div>
+                    <button type="button" id="otp-btn" onclick="otp()" class="btn btn-dark fw-bold mt-4 rounded-3">Send OTP</button>
+                    <div class="d-none" id="otp-box">
+                        <div class="form-floating position-relative  mb-4 text-start border-bottom">
+                            <input name="otp-signup" type="number" class="form-control" id="otp-signup" placeholder="OTP">
+                            <label for="otp-signup">OTP</label>
+                        </div>
+                        <div id="status3"></div>
+                        <button type="button" id="verify-btn" onclick="verify()" class="btn btn-dark fw-bold mt-4 rounded-3">verify</button>
                     </div>
-                    <div class="form-floating position-relative text-start">
-                        <input type="password" class="form-control" id="confirm-password-signup" placeholder="Password">
-                        <label for="confirm-password-signup">Confirm Password</label>
+                    <div class="d-none" id="password-box">
+                        <div class="form-floating position-relative  mb-4 text-start">
+                            <input name="password" type="password" class="form-control" id="password-signup" placeholder="Password">
+                            <label for="password-signup">Password</label>
+                        </div>
+                        <div class="form-floating position-relative text-start">
+                            <input type="password" class="form-control" id="confirm-password-signup" placeholder="Password">
+                            <label for="confirm-password-signup">Confirm Password</label>
+                        </div>
+                        <div id="status1"></div>
+                        <button type="button" id="submit-signup" onclick="signup()" class="btn btn-dark fw-bold mt-4 rounded-3">Sign up</button>
                     </div>
-                    <div id="status1"></div>
-                    <button type="button" id="submit-signup" onclick="signup()" class="btn btn-dark fw-bold mt-4 rounded-3">Sign up</button>
                 </form>
                 <hr class="text-dark">
                 <div class=" pt-1 fw-bold fs-6">
@@ -73,9 +85,7 @@
         var submit_signup = document.getElementById("submit-signup");
 
         function login(){
-            if (email_login.value == "" || !(valid.test(email_login.value))){
-                
-                console.log(10);    
+            if (email_login.value == "" || !(valid.test(email_login.value))){  
                 console.log(document.getElementById('status'));
                 document.getElementById('status').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid email </div>`;
             }
@@ -109,15 +119,67 @@
             }
         }
 
-        function signup(){
+
+        function otp(){
+            document.getElementById('status2').innerHTML = "";
             if (name_signup.value == ""){
-                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid Name </div>`;
+                document.getElementById('status2').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid Name </div>`;
                 return 0
             }
             if (email_signup.value == "" || !(valid.test(email_signup.value))){
-                document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid email </div>`;
+                document.getElementById('status2').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid email </div>`;
                 return 0
             }
+            var fd = new FormData(document.getElementById("signup"));
+            superduper("POST","/api/sent-otp",fd,"otp_resp",null);
+            name_signup.setAttribute('readonly','true');
+            email_signup.setAttribute('readonly','true');
+            document.getElementById("otp-btn").disabled= true;
+
+        }
+
+        function otp_resp(resp){
+            create_alert(resp);
+            resp = JSON.parse(resp);
+            if(resp["result"] == true){
+                document.getElementById("otp-btn").classList.add("d-none");
+                document.getElementById("otp-box").classList.remove("d-none");
+            }
+            else{
+                name_signup.setAttribute('readonly','false');
+                email_signup.setAttribute('readonly','false');
+                document.getElementById("otp-btn").disabled= false;
+            
+            }
+
+        }
+
+        function verify(){
+            document.getElementById('status3').innerHTML = "";
+            if (document.getElementById("otp-signup").value == ""){
+                document.getElementById('status3').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid OTP </div>`;
+                return 0
+            }
+            var fd = new FormData(document.getElementById("signup"));
+            superduper("POST","/api/verify-otp",fd,"verify_resp",null);
+            document.getElementById("verify-btn").disabled= true;
+
+        }
+
+        function verify_resp(resp){
+            create_alert(resp);
+            resp = JSON.parse(resp);
+            if(resp["result"] == true){
+                document.getElementById("otp-box").classList.add("d-none");
+                document.getElementById("password-box").classList.remove("d-none");
+            }
+            else{
+                document.getElementById("verify-btn").disabled= false;
+            }
+
+        }
+
+        function signup(){
             if (password_signup.value == ""){
                 document.getElementById('status1').innerHTML = `<div class="text-danger w-100 text-center pt-2 fs-6">Enter valid password </div>`;
                 return 0

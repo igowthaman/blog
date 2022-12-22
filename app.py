@@ -7,8 +7,6 @@ from post import post
 from model import User,Post, db
 load_dotenv('.env')
 
-from flask_pymongo import PyMongo 
-mongo = PyMongo()
 
 
 app = Flask("Memoir", template_folder=environ.get('VIEW'))
@@ -30,7 +28,12 @@ def load_user(user_id):
 def main():
     post = db.session.query(Post, User).with_entities(
         Post.id, Post.content, Post.title, Post.user_id, User.name, Post.created_at 
-    ).order_by(Post.id.desc()).all()
+    ).filter(
+        Post.user_id == User.id, 
+        Post.is_active == 1
+    ).order_by(
+        Post.id.desc()
+    ).all()
     if current_user.is_authenticated:
         user = User.query.filter_by(id = current_user.id).first()
         return render_template('index.html',user=user, post=post)
@@ -43,7 +46,6 @@ def profile(id):
     if current_user.is_authenticated:
         user = User.query.filter_by(id = id).first()
         post = Post.query.order_by(Post.id.desc()).filter_by(user_id = id, is_active=True).all()
-        print(len(post))
         return render_template('profile.html',user=user, post = post)
     else:
         return render_template('index.html')
